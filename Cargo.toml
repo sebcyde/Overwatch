@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
+notify-rust = "4.10.0"
 sysinfo = "0.30.6"
