@@ -2,6 +2,10 @@ extern crate notify_rust;
 extern crate sysinfo;
 
 use notify_rust::Notification;
+use std::collections::{
+    hash_map::{self, Entry},
+    HashMap,
+};
 use sysinfo::System;
 
 fn notify(title: &str, body: &str) {
@@ -33,7 +37,21 @@ fn main() {
 
         let processes = system.processes();
         if processes.len() > 100 {
-            // Example threshold: 100 processes
+            let mut process_map: HashMap<&str, Vec<&str>> = HashMap::new();
+
+            for (_pid, process) in processes {
+                process_map.insert(process.name(), Vec::new());
+
+                for (_pid, process_nested) in processes {
+                    let current_entry: Entry<&str, Vec<&str>> =
+                        process_map.entry(process_nested.name());
+                    println!("Current Entry: {:?}", current_entry)
+
+                    // insert instances count into relevant vec
+                    //https://www.reddit.com/r/rust/comments/6d4no8/group_by_on_a_vect/
+                }
+            }
+
             notify(
                 "High Process Count",
                 &format!("Number of Processes: {}", processes.len()),
