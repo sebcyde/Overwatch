@@ -13,43 +13,55 @@ fn main() {
 
     notify("Title", "Body copy");
 
-    // loop {
-    system.refresh_all();
+    loop {
+        system.refresh_all();
 
-    // Get CPU usage
-    let cpu_usage = system.global_cpu_info();
-    println!("CPU Usage: {:?}%\n", cpu_usage);
+        // Get CPU usage
+        let cpu_usage: f32 = system.global_cpu_info().cpu_usage();
+        if cpu_usage > 90.0 {
+            notify("High CPU Usage", &format!("CPU Usage: {:.2}%", cpu_usage));
+        }
 
-    let one: u64 = system.free_memory();
-    println!("Free Memory: {}\n", one);
+        let free_memory: u64 = system.free_memory();
+        if free_memory < 1024 * 1024 * 100 {
+            // Example threshold: 100 MB
+            notify("Low Memory", &format!("Free Memory: {:.2} KB", free_memory));
+        }
 
-    let cores: usize = system.physical_core_count().unwrap();
-    println!("CPU Usage: {:?}%\n", cores);
+        let cores: usize = system.physical_core_count().unwrap();
+        println!("cores: {:?}%\n", cores);
 
-    // let processes = system.processes();
+        let processes = system.processes();
+        if processes.len() > 100 {
+            // Example threshold: 100 processes
+            notify(
+                "High Process Count",
+                &format!("Number of Processes: {}", processes.len()),
+            );
+        }
 
-    let available_memory: u64 = system.available_memory();
-    println!("Available Memory: {}\n", available_memory);
+        // let available_memory: u64 = system.available_memory();
+        // println!("Available Memory: {}\n", available_memory);
 
-    // for (pid, process) in processes {
-    // println!("PID: {}", pid);
-    // println!("Name: {}", process.name());
+        // for (pid, process) in processes {
+        // println!("PID: {}", pid);
+        // println!("Name: {}", process.name());
 
-    // let disk_usage: DiskUsage = process.disk_usage();
-    // println!(
-    //     "read bytes   : new/total => {}/{}",
-    //     disk_usage.read_bytes, disk_usage.total_read_bytes,
-    // );
-    // println!(
-    //     "written bytes: new/total => {}/{}",
-    //     disk_usage.written_bytes, disk_usage.total_written_bytes,
-    // );
-    //
-    // println!("{} Memory Usage: {:?}\n", process.name(), process.memory());
-    // }
+        // let disk_usage: DiskUsage = process.disk_usage();
+        // println!(
+        //     "read bytes   : new/total => {}/{}",
+        //     disk_usage.read_bytes, disk_usage.total_read_bytes,
+        // );
+        // println!(
+        //     "written bytes: new/total => {}/{}",
+        //     disk_usage.written_bytes, disk_usage.total_written_bytes,
+        // );
+        //
+        // println!("{} Memory Usage: {:?}\n", process.name(), process.memory());
+        // }
 
-    std::process::exit(0)
+        // std::process::exit(0)
 
-    // std::thread::sleep(std::time::Duration::from_secs(60));
-    // }
+        std::thread::sleep(std::time::Duration::from_secs(60));
+    }
 }
